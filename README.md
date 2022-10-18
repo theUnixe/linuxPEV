@@ -1,4 +1,4 @@
-# linuxPEV
+
 
 
 # PEASS-ng - Privilege Escalation Awesome Scripts SUITE new generation
