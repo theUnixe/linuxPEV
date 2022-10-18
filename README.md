@@ -1,7 +1,7 @@
 
 
 
-# PEASS-ng - Privilege Escalation Awesome Scripts SUITE new generation
+# LINUXpev - Privilege Escalation Awesome Scripts SUITE new generation
 
 ![](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/raw/master/linPEAS/images/peass.png)
 
