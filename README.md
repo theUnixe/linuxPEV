@@ -1,5 +1,5 @@
 
-
+Follow: https://blog.bdhungana.com.np/linux-privilege-escalation
 ---
 
 # Linux Privilege Escalation
