@@ -1,5 +1,6 @@
 
 Follow: https://blog.bdhungana.com.np/linux-privilege-escalation
+https://docs.h4rithd.com/linux/basic-commands?ref=172.16.77.130
 ---
 
 # Linux Privilege Escalation
